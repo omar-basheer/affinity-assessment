@@ -13,6 +13,7 @@ func Router() *mux.Router {
 
 	// register route
 	router.HandleFunc("/upload", upload).Methods("POST")
+	router.HandleFunc("/download/{companyName}", download).Methods("GET")
 
 	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {

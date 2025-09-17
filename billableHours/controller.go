@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -38,5 +39,21 @@ func upload(w http.ResponseWriter, r *http.Request) {
 }
 
 func download(w http.ResponseWriter, r *http.Request) {
-	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
+	vars := mux.Vars(r)
+	companyName := vars["companyName"]
+	if companyName == "" {
+		RespondWithError(w, 400, "invalid companyName", "Please provide a valid companyName")
+		return
+	}
+
+	filename, err := generateInvoice(companyName)
+	if err != nil {
+		RespondWithError(w, 400, "failed to generate invoice", err.Error())
+		return
+	}
+
+	// serve file as download
+	w.Header().Set("Content-Type", "application/pdf")
+	w.Header().Set("Content-Disposition", "attachment; filename="+filename)
+	http.ServeFile(w, r, filename)
 }
