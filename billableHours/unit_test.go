@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 )
@@ -26,7 +27,7 @@ func TestReadCSV(t *testing.T) {
 		t.Fatalf("expected 1 company, got %d", len(cm))
 	}
 
-	em, ok := cm["Acme"]
+	em, ok := cm["acme"]
 	if !ok {
 		t.Fatalf("company Acme missing")
 	}
@@ -49,7 +50,7 @@ func TestReadCSV(t *testing.T) {
 	}
 }
 
-func TestUploadHandler(t *testing.T) {
+func TestUploadCSV(t *testing.T) {
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
 
@@ -69,11 +70,64 @@ func TestUploadHandler(t *testing.T) {
 	req := httptest.NewRequest("POST", "/api/upload", &b)
 	req.Header.Set("Content-Type", w.FormDataContentType())
 
+	// test through router to make sure router + middleware are working
 	rr := httptest.NewRecorder()
-	router := Router() // make sure Router() is deterministic in tests
+	router := Router()
 	router.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200 OK, got %d, body: %s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestGenerateInvoice_NoCompany(t *testing.T) {
+	companyMap = CompanyMap{}
+	_, err := generateInvoice("SomeCompany")
+	if err == nil {
+		t.Fatal("expected error for missing company, got nil")
+	}
+}
+
+func TestGenerateInvoice_Success(t *testing.T) {
+	companyMap = CompanyMap{
+		"google": {
+			1: {BillableRate: 100, TotalHours: 5},
+		},
+	}
+
+	filename, err := generateInvoice("Google")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	defer os.Remove(filename)
+
+	// check that file exists when created
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		t.Fatalf("expected file %v to exist", filename)
+	}
+}
+
+func TestDownloadInvoice(t *testing.T) {
+	companyMap = CompanyMap{
+		"netflix": {
+			1: {BillableRate: 100, TotalHours: 5},
+		},
+	}
+
+	req := httptest.NewRequest("GET", "/api/download/Netflix", nil)
+
+	// test through router to make sure router + middleware are working
+	rr := httptest.NewRecorder()
+	router := Router()
+	router.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d, body: %s", rr.Code, rr.Body.String())
+	}
+
+	ct := rr.Header().Get("Content-Type")
+	if ct != "application/pdf" {
+		t.Fatalf("expected application/pdf, got %s", ct)
 	}
 }

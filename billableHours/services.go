@@ -12,7 +12,7 @@ import (
 
 // company map: key: companyName, value: employee-map
 // employee map: key employee id, value: {billableRate, totalHours}
-
+//
 // insertion:
 // - loop through csv file
 // - update map with entry:
@@ -23,7 +23,7 @@ import (
 //				add employee details
 //		- else:
 //			- add company and employee details
-
+//
 // retrieval
 // - access map by company name
 // - loop though employees

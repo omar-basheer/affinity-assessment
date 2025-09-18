@@ -42,7 +42,7 @@ func download(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	companyName := vars["companyName"]
 	if companyName == "" {
-		RespondWithError(w, 400, "invalid companyName", "Please provide a valid companyName")
+		RespondWithError(w, 400, "invalid companyName", "Please provide a valid company name")
 		return
 	}
 
