@@ -16,13 +16,13 @@ import (
 // insertion:
 // - loop through csv file
 // - update map with entry:
-//		- if company exists
-//			- if employee has worked for company
-//				- update employee hours
-//			- else:
-//				add employee details
+//	- if company exists
+//		- if employee has worked for company
+//			- update employee hours
 //		- else:
-//			- add company and employee details
+//			- add employee details
+//	- else:
+//		- add company and employee details
 //
 // retrieval
 // - access map by company name
