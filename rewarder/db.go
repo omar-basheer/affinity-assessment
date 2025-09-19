@@ -8,6 +8,7 @@ import (
 
 var DB *sql.DB
 
+// InitDB initializes the SQLite database and runs migrations
 func InitDB(path string) error {
 	var err error
 	DB, err = sql.Open("sqlite3", path)

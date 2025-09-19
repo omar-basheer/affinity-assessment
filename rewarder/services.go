@@ -39,6 +39,7 @@ import (
 // - else:
 //	- return voucher details (customer name, voucher amount, expiry date?)
 
+// Voucher represents a voucher
 type Voucher struct {
 	ID           string
 	CustomerID   int
@@ -49,6 +50,7 @@ type Voucher struct {
 	ExpiresAt    time.Time
 }
 
+// createVoucher creates a voucher and stores it in the database
 func createVoucher(amount float64, validity int, customerID int, customerName string, orderValue float64) Voucher {
 	// generate unique id
 	id := uuid.New().String()
@@ -79,6 +81,7 @@ func createVoucher(amount float64, validity int, customerID int, customerName st
 	return v
 }
 
+// readCSV reads and processes the CSV file provided
 func readCSV(reader io.Reader) ([]Voucher, error) {
 	csvReader := csv.NewReader(reader)
 	csvReader.FieldsPerRecord = -1
@@ -117,6 +120,9 @@ func readCSV(reader io.Reader) ([]Voucher, error) {
 		fName = strings.TrimSpace(strings.ToLower(fName))
 
 		value, err := strconv.ParseFloat(strings.TrimSpace(orderValue), 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid order value: %s", orderValue)
+		}
 
 		// create vouchers
 		if value < 1000 {

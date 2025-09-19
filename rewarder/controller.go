@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// upload handles file uploads via multipart/form-data
 func upload(w http.ResponseWriter, r *http.Request) {
 	// limit request body to 10MB to avoid huge uploads
 	r.Body = http.MaxBytesReader(w, r.Body, 10<<20) // 10 MB

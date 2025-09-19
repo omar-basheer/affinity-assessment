@@ -30,9 +30,13 @@ import (
 // - update output pdf with employee data
 // - return
 
+// CompanyMap is a global map holding all companies and their employees
 type CompanyMap map[string]EmployeeMap
+
+// EmployeeMap holds employee details
 type EmployeeMap map[int]Employee
 
+// Employee represents an employee
 type Employee struct {
 	BillableRate float64
 	TotalHours   float64
@@ -40,6 +44,7 @@ type Employee struct {
 
 var companyMap CompanyMap
 
+// readCSV reads and processes the CSV file provided
 func readCSV(reader io.Reader) (CompanyMap, error) {
 	cm := make(CompanyMap)
 	csvReader := csv.NewReader(reader)
@@ -115,6 +120,7 @@ func readCSV(reader io.Reader) (CompanyMap, error) {
 	return cm, nil
 }
 
+// generateInvoice creates a PDF invoice for the specified company
 func generateInvoice(companyName string) (string, error) {
 	cName := strings.TrimSpace(strings.ToLower(companyName))
 

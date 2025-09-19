@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// upload handles file uploads via multipart/form-data
 func upload(w http.ResponseWriter, r *http.Request) {
 	// limit request body to 10MB to avoid huge uploads
 	r.Body = http.MaxBytesReader(w, r.Body, 10<<20) // 10 MB
@@ -38,6 +39,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// download generates and serves an invoice PDF for the specified company
 func download(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	companyName := vars["companyName"]

@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// Router initializes and returns a new mux.Router with defined routes and middleware.
 func Router() *mux.Router {
 	router := mux.NewRouter().PathPrefix("/api").Subrouter()
 
@@ -27,6 +28,7 @@ func Router() *mux.Router {
 	return router
 }
 
+// corsMiddleware adds CORS headers to the response
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

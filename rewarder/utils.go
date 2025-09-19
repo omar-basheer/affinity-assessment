@@ -35,6 +35,7 @@ func RespondWithError(w http.ResponseWriter, statusCode int, message string, err
 	json.NewEncoder(w).Encode(resp)
 }
 
+// RespondWithJSON sends a JSON response with the given status code, message, and data
 func RespondWithJSON(w http.ResponseWriter, statusCode int, message string, data any) error {
 	resp := SuccessResponse[any]{
 		Message: message,
