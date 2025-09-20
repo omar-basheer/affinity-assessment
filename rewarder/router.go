@@ -14,14 +14,12 @@ func Router() *mux.Router {
 
 	// register route
 	router.HandleFunc("/upload", upload).Methods("POST")
-	//router.HandleFunc("/download/{companyName}", download).Methods("GET")
 
 	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		// optional: send 404 or some default response for other unmatched routes
 		http.NotFound(w, r)
 	})
 

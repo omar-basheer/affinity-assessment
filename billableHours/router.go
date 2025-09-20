@@ -21,7 +21,6 @@ func Router() *mux.Router {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		// optional: send 404 or some default response for other unmatched routes
 		http.NotFound(w, r)
 	})
 
