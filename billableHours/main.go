@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -18,6 +19,6 @@ func main() {
 	// start server
 	fmt.Println("Server running on port:", port)
 	if err := http.ListenAndServe(":"+port, router); err != nil {
-		fmt.Printf("server failed to start: %v", err)
+		log.Fatal("failed to start server: ", err)
 	}
 }
